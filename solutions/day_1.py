@@ -1,5 +1,3 @@
-myInput = open("inputs/day_1.txt").readlines()
-
 # Part One
 
 myInput = open("inputs/day_1.txt").readlines()
