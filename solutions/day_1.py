@@ -4,7 +4,7 @@ myInput = open("inputs/day_1.txt").readlines()
 
 def parseLine(myLine):
     myLine = list(filter(lambda c: c.isdigit(), myLine))
-    return int(myLine[0])*10+int(myLine[-1])
+    return int(myLine[0]+myLine[-1])
 
 print(sum(list(map(lambda line: parseLine(line), myInput))))
 
