@@ -18,7 +18,6 @@ print(sum(list(map(lambda line: parseLine(line), myInput))))
 # Part Two
 
 def parseLine(line):
-    gameId = re.search(r'Game (\d+):', line).group(1)
     reds =   [int(x) for x in re.findall(r'(\d+) red',   line)]
     greens = [int(x) for x in re.findall(r'(\d+) green', line)]
     blues =  [int(x) for x in re.findall(r'(\d+) blue',  line)]
