@@ -14,7 +14,7 @@ def parseLine(line):
         return int(gameId)
     return 0
 
-print(sum(list(map(lambda line: parseLine(line), myInput))))
+print(sum([parseLine(line) for line in myInput]))
 
 # Part Two
 
@@ -23,4 +23,4 @@ def parseLine(line):
     maxNums = [max(set) for set in [[int(x) for x in re.findall(color, line)] for color in colors]]
     return reduce((lambda x, y: x * y), maxNums)
 
-print(sum(list(map(lambda line: parseLine(line), myInput))))
+print(sum([parseLine(line) for line in myInput]))
