@@ -1,4 +1,5 @@
 import re
+from functools import reduce
 
 myInput = open("inputs/day_2.txt").readlines()
 
@@ -18,9 +19,8 @@ print(sum(list(map(lambda line: parseLine(line), myInput))))
 # Part Two
 
 def parseLine(line):
-    reds =   [int(x) for x in re.findall(r'(\d+) red',   line)]
-    greens = [int(x) for x in re.findall(r'(\d+) green', line)]
-    blues =  [int(x) for x in re.findall(r'(\d+) blue',  line)]
-    return max(reds)*max(greens)*max(blues)
+    colors = [r'(\d+) red', r'(\d+) green', r'(\d+) blue']
+    maxNums = [max(set) for set in [[int(x) for x in re.findall(color, line)] for color in colors]]
+    return reduce((lambda x, y: x * y), maxNums)
 
 print(sum(list(map(lambda line: parseLine(line), myInput))))
