@@ -80,3 +80,6 @@ for unit in seed:
         cleaned = cleaned | unit
 
 print(cleaned.enclosure)
+
+var = 1
+print(type(var))
