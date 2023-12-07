@@ -17,3 +17,5 @@ raceTime = int(''.join(re.findall(r'(\d+)', myInput[0])))
 raceDist = int(''.join(re.findall(r'(\d+)', myInput[1])))
 
 print(len([x for x in range(raceTime) if ((raceTime-x)*x > raceDist)]))
+print(raceTime)
+print(raceDist)
