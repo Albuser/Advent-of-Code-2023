@@ -19,14 +19,15 @@ class Hand:
         curMap = pt1LetterMapping
         if isPartTwo:
             curMap = pt2LetterMapping
+        self.isPartTwo = isPartTwo
         self.cards = [parseCard(char, curMap) for char in inputLine.split(' ')[0]]
         self.bid = int(inputLine.split(' ')[1])
-        self.type = self.getHandType(isPartTwo)
+        self.type = self.getHandType()
         assert (len(self.cards) == 5)
         assert (self.type in range(7))
     
-    def getHandType(self, isPartTwo):
-        if isPartTwo:
+    def getHandType(self):
+        if self.isPartTwo:
             tempCards = copy.deepcopy(self.cards)
             jokerLocs = [i for i in range(5) if self.cards[i] == 0]
             if len(jokerLocs) == 5: return 6  # 5 of a kind
