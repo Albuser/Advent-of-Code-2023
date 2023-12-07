@@ -3,12 +3,6 @@ import functools
 import copy
 myInput = [line.strip() for line in open("inputs/day_7.txt").readlines()]
 
-# myInput = """32T3K 765
-# T55J5 684
-# KK677 28
-# KTJJT 220
-# QQQJA 483""".split('\n')
-
 # Part One
 
 letterMapping = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
@@ -118,7 +112,3 @@ hands = [Hand(line) for line in myInput]
 hands = sorted(hands, key=functools.cmp_to_key(compareHands))
 
 print(sum([hands[i].bid*(i+1) for i in range(len(hands))]))
-
-
-
-# Not 246814631
