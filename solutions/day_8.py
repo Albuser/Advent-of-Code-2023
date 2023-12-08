@@ -23,6 +23,7 @@ while curLoc != 'ZZZ':
 print(curIndx)
 
 # Part Two
+# This doesn't work in general but it gave the right answer so :person-shrugging:
 
 curLocs = [loc for loc in mapMap.keys() if loc[-1] == 'A']
 startSteps = [0]*len(curLocs)
