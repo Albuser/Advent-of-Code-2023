@@ -1,5 +1,4 @@
 import re
-import itertools
 
 myInput = [line.strip() for line in open("inputs/day_11.txt").readlines()]
 
@@ -7,8 +6,7 @@ myInput = [line.strip() for line in open("inputs/day_11.txt").readlines()]
 emptyRows = set([i for i in range(len(myInput)) if not '#' in myInput[i]])
 emptyCols = set([i for i in range(len(myInput[0])) if not '#' in [myInput[j][i] for j in range(len(myInput))]])
 # Find all the galaxies
-galaxies = [[(row, col.start()) for col in re.finditer('(#)', myInput[row])] for row in range(len(myInput))]
-galaxies = list(itertools.chain.from_iterable(galaxies))
+galaxies = [(row, col.start()) for row in range(len(myInput)) for col in re.finditer('(#)', myInput[row])]
 
 def distance(gal1, gal2, rate):
     # Get the distance between a pair of gals, based on rate of expansion
