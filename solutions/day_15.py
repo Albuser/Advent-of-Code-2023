@@ -14,6 +14,7 @@ def parseStep(curVal, step):
 print(sum([parseStep(0, step) for step in myInput.split(",")]))
 
 # Part Two:
+# I know linked lists would be more efficient, but I'm not gonna change it
 boxes = {}
 for step in myInput.split(","):
     label = re.split(r"[-=]", step)[0]
@@ -42,3 +43,6 @@ for box, lenses in boxes.items():
         totalPower += (box + 1) * (i + 1) * (lens[1])
 
 print(totalPower)
+
+hash = 2
+print(hash("test"))
