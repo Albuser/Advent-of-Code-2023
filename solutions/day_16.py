@@ -2,20 +2,6 @@ with open("inputs/day_16.txt") as f:
     myInput = [x.strip() for x in f.readlines()]
 
 
-# myInput = r""".|...\....
-# |.-.\.....
-# .....|-...
-# ........|.
-# ..........
-# .........\
-# ..../.\\..
-# .-.-/..|..
-# .|....-|.\
-# ..//.|....""".split(
-#     "\n"
-# )
-
-
 def add(t1, t2):
     return tuple(sum(x) for x in zip(t1, t2))
 
