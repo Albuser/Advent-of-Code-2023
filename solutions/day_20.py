@@ -1,13 +1,21 @@
 with open("inputs/day_20.txt") as f:
     myInput = [line.strip() for line in f.readlines()]
 
-myInput = r"""broadcaster -> a, b, c
-%a -> b
-%b -> c
-%c -> inv
-&inv -> a""".split(
-    "\n"
-)
+# myInput = r"""broadcaster -> a, b, c
+# %a -> b
+# %b -> c
+# %c -> inv
+# &inv -> a""".split(
+#     "\n"
+# )
+
+# myInput = r"""broadcaster -> a
+# %a -> inv, con
+# &inv -> b
+# %b -> con
+# &con -> output""".split(
+#     "\n"
+# )
 
 
 class Module:
@@ -32,6 +40,9 @@ class Signal:
 
     def process(self):
         return self.dest.handleSignal(self)
+
+    def __repr__(self):
+        return self.source.id + " -" + self.val + "-> " + self.dest.id
 
 
 class Button(Module):
@@ -83,22 +94,27 @@ class Conjunction(Module):
     def __init__(self, children, type, id):
         super().__init__(children, type, id)
         self.state = {}
-        for child in children:
-            self.state[child] = "LO"
-        self.stateHash = hash(self.state.values())
+        self.updateStateHash()
 
     def allHigh(self):
         return all([val == "HI" for val in self.state.values()])
 
     def addChildren(self, children):
         super().addChildren(children)
-        for child in children:
-            self.state[child] = "LO"
-        self.stateHash = hash(self.state.values())
+
+    def updateStateHash(self):
+        ids = [module for module in self.state.keys()]
+        ids.sort(key=lambda x: x.id)
+        self.stateHash = [hash(self.state[id]) for id in ids]
+
+    def addParents(self, parents):
+        for parent in parents:
+            self.state[parent] = "LO"
+        self.updateStateHash()
 
     def handleSignal(self, signal):
         self.state[signal.source] = signal.val
-        self.stateHash = hash(self.state.values())
+        self.updateStateHash()
         if self.allHigh():
             return super().sendSignal("LO")
         else:
@@ -147,12 +163,27 @@ def allModuleState(modules):
     return myHash
 
 
+def addParents(modules):
+    conjunctions = {}
+    for id, module in modules.items():
+        children = module.children
+        for child in children:
+            if child.type == "&":
+                if child.id in conjunctions:
+                    conjunctions[child.id].append(id)
+                else:
+                    conjunctions[child.id] = [id]
+    for conjunction, children in conjunctions.items():
+        modules[conjunction].addParents([modules[child] for child in children])
+
+
 def pushButton(button):
     low = 0
     high = 0
     signals = button.pushButton()
     while len(signals) > 0:
-        signal = signals.pop()
+        signal = signals.pop(0)
+        # print(signal)
         if signal.val == "HI":
             high += 1
         else:
@@ -166,24 +197,54 @@ def pushButton(button):
 # Part One
 modules = initializeModules(myInput)
 addChildren(myInput, modules)
+addParents(modules)
 button = modules["button"]
 
 totalLow, totalHigh, state = pushButton(button)
-print(totalLow, totalHigh)
-# for i in range(999):
-#     low, high, state = pushButton(button)
-#     totalLow += low
-#     totalHigh += high
+for i in range(999):
+    low, high, state = pushButton(button)
+    totalLow += low
+    totalHigh += high
 print(totalLow * totalHigh)
 
-# 530068442 too low
+# Part Two
+modules = initializeModules(myInput)
+addChildren(myInput, modules)
+addParents(modules)
+button = modules["button"]
 
+# Find the first cycle:
 # seenStates = [allModuleState(modules)]
-
-# totalLow, totalHigh, state = pushButton(button)
+# low, high, state = pushButton(button)
 # while not state in seenStates:
 #     seenStates.append(state)
 #     low, high, state = pushButton(button)
-#     totalLow += low
-#     totalHigh += high
 # print(seenStates.index(state), len(seenStates))
+
+# Find the first rx LOW message
+indx = 1
+signals = button.pushButton()
+signal = signals.pop(0)
+while not ((signal.dest.id == "rx") and (signal.val == "LO")):
+    # print(signal.dest.id, signal.val)
+    # rx is triggered by a conjunction module fed by four independent circuits
+    # rx will receive 'low' after the LCM of all the cycles of those circuits
+    if (signal.dest.id == "vg") and (signal.val == "LO"):
+        print("VG is Low", indx)
+    if (signal.dest.id == "kp") and (signal.val == "LO"):
+        print("KP is Low", indx)
+    if (signal.dest.id == "gc") and (signal.val == "LO"):
+        print("GC is Low", indx)
+    if (signal.dest.id == "tx") and (signal.val == "LO"):
+        print("TX is Low", indx)
+    newSignals = signal.process()
+    if newSignals:
+        signals += newSignals
+    if len(signals) == 0:
+        signals = button.pushButton()
+        indx += 1
+        if (indx % 50000) == 0:
+            print(f"we pushed the button {indx} times...")
+    signal = signals.pop(0)
+
+print(indx)  # 238593356738827
